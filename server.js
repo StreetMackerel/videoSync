@@ -7,7 +7,7 @@ var express = require('express')
 var app = express()
 var http = require('http')
 var server = http.createServer(app)
-var io = require('socket.io')(server)
+var io = require('socket.io')(server, {pingInterval: 5000})
 var PORT = process.env.PORT || 3000
 
 var _started = false;
