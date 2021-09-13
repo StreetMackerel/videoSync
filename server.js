@@ -7,15 +7,16 @@ var express = require('express')
 var app = express()
 var http = require('http')
 var server = http.createServer(app)
-var io = require('socket.io')(server, {pingInterval: 5000})
+var io = require('socket.io')(server, {pingInterval: 5000}) // pinginterval handles reporting latency per client
 var PORT = process.env.PORT || 3000
 
 var _started = false;
 var _vidPos = "0.0";
 
 var clients = io.sockets.clients();
+var requestee;
 
-app.use(express.static(__dirname + '/public'))
+app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 
 //Mount route
@@ -46,12 +47,13 @@ io.on('connection', function(client) {
 
     client.on('getTime', function(nothing) {
         console.log('requesting time');
+        requestee = client;
         io.emit('getMasterTime');
     });
 
     client.on('setTime', function(time) {
         console.log("master setting time")
-        client.broadcast.emit('startVid',time); //this adjusts all clients video to master's time
+        requestee.emit('startVid',time); //this adjusts all clients video to master's time
     });
 })
 

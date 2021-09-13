@@ -10,21 +10,26 @@
     <script src="script.js"></script>
 </head>
 <body style="margin:0;">
-  <div style = "display: flex; width:100%; height: 100vh;">
-    <video id = 'vid' loop = 'true' >
-      <videocontrols></videocontrols>
-      <source src="tired.mp4" type="video/mp4">
+  <div style = "width:100vw; height: 100vh;">
+    <video id = 'vid' loop = 'true' playsinline muted>
+      <source src="tired.mp4#t=0.001" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <div class ="content" style="position:absolute">
-      <h1 id = "clientID">NOT MASTER</h1>
+    <audio id='aud' controls playsinline hidden>
+      <source src="audio.mp3" type="audio/mpeg" >
+      Your browser does not support the audio tag.
+    </audio>
+    <div class ="content" style="position:absolute; top:0; width:100vw;">
+      <h1 id = "clientID">USER</h1>
       <p id="clientCount" hidden>0 Clients connected</p>
       
-      <button class="button" onclick="getTime()">sync</button>
+      
     </div>
   </div>
-</body>
 
+  <button id="sync" class="button" onclick="getTime()">sync</button>
+  <button id="unmute" class="button" onclick="toggleMute()" hidden>unmute</button>
+</body>
 </html>
 
 <!-- separate video and audio -->
