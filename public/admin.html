@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
     <title>Video Sync Test</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </head>
 <body style="margin:0;">
-  <p id = "clientID">ADMIN</p>
-  <p id="clientCount">0 Clients connected</p>
-  <video width="320" height="240" id="vid">
-    <source src="sample.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <button onclick="setMaster()">Set Master</button>
+  <div style = "display: flex; width:100%; height: 100vh;">
+    <video id = 'vid'>
+      <source src="tired.mp4" type="video/mp4" loop = 'true'>
+      Your browser does not support the video tag.
+    </video>
+    <div class ="content" style="position:absolute">
+      <h1 id = "clientID">ADMIN - NOT SET</h1>
+      <p id="clientCount">0 Clients connected</p>
+      
+      <button class="button" onclick="setMaster()">Set Master</button>
+    </div>
+  </div>
 </body>
 
 </html>
