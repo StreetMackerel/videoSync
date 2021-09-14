@@ -10,39 +10,27 @@
     <script src="script.js"></script>
 </head>
 <body style="margin:0;">
-  <div style = "width:100vw; height: 100vh;">
+  <div style = " display:flex; width:100vw; height: 100vh;">
     <video id = 'vid' loop = 'true' playsinline muted>
-      <source src="tired.mp4#t=0.001" type="video/mp4">
+      <source src="sam.mp4#t=0.001" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <audio id='aud' controls playsinline hidden>
-      <source src="audio.mp3" type="audio/mpeg" >
+    <audio id='aud' loop = 'true' controls playsinline hidden>
+      <source src="sam.mp3" type="audio/mpeg" >
       Your browser does not support the audio tag.
     </audio>
     <div class ="content" style="position:absolute; top:0; width:100vw;">
       <h1 id = "clientID">USER</h1>
       <p id="clientCount" hidden>0 Clients connected</p>
       
-      
+      <button id="resync" class="button2" onclick="getTime()"hidden>re-sync</button>
     </div>
   </div>
 
   <button id="sync" class="button" onclick="getTime()">sync</button>
   <button id="unmute" class="button" onclick="toggleMute()" hidden>unmute</button>
+  
 </body>
 </html>
 
-<!-- separate video and audio -->
-<!-- <video id="myvideo" controls muted>
-    <source src="path/to/video.mp4" type="video/mp4" />
-    <audio id="myaudio" controls>
-        <source src="path/to/audio.mp3" type="audio/mpeg"/>
-    </audio>
-</video>
 
-<script>
-var myvideo = document.getElementById("myvideo");
-var myaudio = document.getElementById("myaudio");
-myvideo.onplay  = function() { myaudio.play();  }
-myvideo.onpause = function() { myaudio.pause(); }
-</script> -->

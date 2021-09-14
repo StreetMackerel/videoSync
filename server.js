@@ -14,54 +14,66 @@ var _started = false;
 var _vidPos = "0.0";
 
 var clients = io.sockets.clients();
+
+//vars for master client and current sync requestee
 var requestee;
+var master = null;
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 
 //Mount route
-app.get(['/'], function(req, res, next) {
+app.get(['/', '/index.html'], function(req, res, next) {
     res.sendFile(__dirname + '/public/index.html')
 })
 
 //when a client connects
 io.on('connection', function(client) {
 
+    //on connect or disconnect first update master list of clients 
+
     console.info(`Client connected [id=${client.id}]`);
-
-    var clientsLength = Object.keys(io.sockets.sockets).length;
-    client.emit('clientList', clientsLength);
-
-    // assigns master to first connected
-    // if(Object.keys(io.sockets.sockets)[0]==client.id){
-    //     client.emit('setMaster', null);
-    // }
 
     client.on("disconnect", () => {
         console.info(`Client gone [id=${client.id}]`);
+        var clientsLength = Object.keys(io.sockets.sockets).length;
+        master.emit('clientList', clientsLength);
     });
 
-    if(_started){
-        client.emit('startVid', _vidPos);
+    if(master!=null){
+        var clientsLength = Object.keys(io.sockets.sockets).length;
+        master.emit('clientList', clientsLength);
     }
-
+    
+    //first half of sync: client gets master time. client is stored as requestee
     client.on('getTime', function(nothing) {
         console.log('requesting time');
         requestee = client;
-        io.emit('getMasterTime');
+        if(master!==null){
+            master.emit('getMasterTime');
+        } else {
+            io.emit('getMasterTime'); // if master unassigned check all for master
+        }
+    });
+
+
+    client.on('resync', function(time) {
+        console.log("master setting time");
+        io.emit('startVid',time); //this adjusts just the requestee's video to master's time
     });
 
     client.on('setTime', function(time) {
-        console.log("master setting time")
-        requestee.emit('startVid',time); //this adjusts all clients video to master's time
+        console.log("master setting time");
+        master = client;
+        requestee.emit('startVid',time); //this adjusts just the requestee's video to master's time
     });
-})
 
+    
+})
 
 app.post('/start', function(request, response){
     io.emit('startVid', "0.0");
 });
-
 
 //start web server
 server.listen(PORT, function() {

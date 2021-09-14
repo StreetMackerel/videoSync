@@ -2,6 +2,7 @@ var socket = io.connect();
 var testText = "default";
 var buttonState;
 var isMaster = false;
+var unmuted = false;
 var currTime = "0.0"
 var latency = 0;
 var mobileBuffer = 0;
@@ -51,7 +52,7 @@ socket.on('getMasterTime', function(recipient) {
     if(isMaster){
         var vid = document.getElementById("vid");
         var time = vid.currentTime;
-        socket.emit('setTime', [time, recipient]);
+        socket.emit('setTime', time);
     }
 })
 
@@ -63,33 +64,42 @@ function setMaster(){
 function getTime() {
     socket.emit('getTime', null);
 }
+
 function toggleMute() {
-    // var vid = document.getElementById("vid");
-    // vid.muted=false;
-    // document.getElementById("unmute").hidden = true;
+    unmuted = true;
     var vid = document.getElementById("vid");
     var aud = document.getElementById("aud");
     aud.currentTime = vid.currentTime;
     aud.play();
     document.getElementById("unmute").hidden = true;
+    document.getElementById("resync").hidden = false;
 }
 
+function syncAll(){
+    if(isMaster){
+        var vid = document.getElementById("vid");
+        var time = vid.currentTime;
+        socket.emit('resync', time);
+        console.log('starting sync all');
+    }
+}
 
 function startVid(pos) {
 
-    // return new Promise((resolve, reject) => {
-    //     console.log('Initial');
-    
     if(isiOS){
         var vid = document.getElementById("vid");
-        //  var aud = document.getElementById("aud");
-          console.log("starting video at: "+pos);
-          vid.currentTime = pos;
-         // aud.currentTime = pos;
-          vid.play();
-          //aud.play();
-          document.getElementById("sync").hidden = true;
-          document.getElementById("unmute").hidden = false;
+        var aud = document.getElementById("aud");
+        console.log("starting video at: "+pos);
+        vid.currentTime = pos;
+        vid.play();
+        document.getElementById("sync").hidden = true;  
+        if(!unmuted){
+            document.getElementById("unmute").hidden = false;
+        } else {
+            document.getElementById("resync").hidden = false;
+            aud.currentTime = vid.currentTime;
+            aud.play();
+        }
     } else {
           var vid = document.getElementById("vid");
           var aud = document.getElementById("aud");
@@ -99,9 +109,12 @@ function startVid(pos) {
           vid.play();
           aud.play();
           document.getElementById("sync").hidden = true;
+          document.getElementById("resync").hidden = false;
     }
 
-
+// return new Promise((resolve, reject) => {
+    //     console.log('Initial');
+    
  //       resolve();
   //  }).then(function(result) {
       //  document.getElementById("unmute").click();
