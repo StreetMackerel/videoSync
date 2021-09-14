@@ -86,31 +86,39 @@ function syncAll(){
 
 function startVid(pos) {
 
-    if(isiOS){
+    if(!isMaster){
+        if(isiOS){
+            var vid = document.getElementById("vid");
+            var aud = document.getElementById("aud");
+            console.log("starting video at: "+pos);
+            vid.currentTime = pos;
+            vid.play();
+            document.getElementById("sync").hidden = true 
+            if(!unmuted){
+                document.getElementById("unmute").hidden = false;
+            } else {
+                document.getElementById("resync").hidden = false;
+                aud.currentTime = vid.currentTime;
+                aud.play();
+            }
+        } else {
+            var vid = document.getElementById("vid");
+            var aud = document.getElementById("aud");
+            console.log("starting video at: "+pos);
+            vid.currentTime = pos;
+            aud.currentTime = pos;
+            vid.play();
+            aud.play();
+            document.getElementById("sync").hidden = true;
+            document.getElementById("resync").hidden = false;
+        } 
+    } else {
         var vid = document.getElementById("vid");
-        var aud = document.getElementById("aud");
         console.log("starting video at: "+pos);
         vid.currentTime = pos;
         vid.play();
-        document.getElementById("sync").hidden = true;  
-        if(!unmuted){
-            document.getElementById("unmute").hidden = false;
-        } else {
-            document.getElementById("resync").hidden = false;
-            aud.currentTime = vid.currentTime;
-            aud.play();
-        }
-    } else {
-          var vid = document.getElementById("vid");
-          var aud = document.getElementById("aud");
-          console.log("starting video at: "+pos);
-          vid.currentTime = pos;
-          aud.currentTime = pos;
-          vid.play();
-          aud.play();
-          document.getElementById("sync").hidden = true;
-          document.getElementById("resync").hidden = false;
     }
+} 
 
 // return new Promise((resolve, reject) => {
     //     console.log('Initial');
@@ -122,4 +130,4 @@ function startVid(pos) {
     //vid.muted=false; //for some reason this doesnt work on iOS but puting it in another button after does?
 
     //tried callback doesnt work
-}
+

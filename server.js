@@ -36,8 +36,10 @@ io.on('connection', function(client) {
 
     client.on("disconnect", () => {
         console.info(`Client gone [id=${client.id}]`);
-        var clientsLength = Object.keys(io.sockets.sockets).length;
-        master.emit('clientList', clientsLength);
+        if(master!=null){
+            var clientsLength = Object.keys(io.sockets.sockets).length;
+            master.emit('clientList', clientsLength)
+        };
     });
 
     if(master!=null){
