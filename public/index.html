@@ -9,28 +9,31 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </head>
-<body style="margin:0;">
-  <div style = " display:flex; width:100vw; height: 100vh;">
-    <video id = 'vid' loop = 'true' playsinline muted>
+<body style="margin:0; height:100%; width:100%; object-fit:fill;">
+
+  <div class ="content" style="position:absolute; top:0; padding:0; z-index:2;">
+    <h1 id = "clientID">USER</h1>
+    <p id="clientCount" hidden>0 Clients connected</p>
+    <button id="resync" style='z-index: 10;'class="button2" onclick="getTime()"hidden>re-sync</button>
+    <!-- <button id="resyncAud" style='z-index: 10;'class="button2" onclick="getTime()"> audio sync</button> -->
+  </div>
+
+    <video id = 'vid' loop = 'true' playsinline muted style = "object-fit:fill; height: 100%; width:100%; margin:0px;">
       <source src="sam.mp4#t=0.001" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    <audio id='aud' loop = 'true' controls playsinline hidden>
-      <source src="sam.mp3" type="audio/mpeg" >
+    <audio id='aud' loop = 'true' controls playsinline preload='auto'>
+      <source src="sam.mp3#t=0.001" type="audio/mpeg" >
       Your browser does not support the audio tag.
     </audio>
-    <div class ="content" style="position:absolute; top:0; width:100vw;">
-      <h1 id = "clientID">USER</h1>
-      <p id="clientCount" hidden>0 Clients connected</p>
-      
-      <button id="resync" class="button2" onclick="getTime()"hidden>re-sync</button>
-    </div>
-  </div>
+    
 
   <button id="sync" class="button" onclick="getTime()">sync</button>
   <button id="unmute" class="button" onclick="toggleMute()" hidden>unmute</button>
-  
+  <button id="skip" class="" onclick="skip()" >skip</button>
 </body>
+
+
 </html>
 
 
