@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <title>Video Sync Test</title>
+    <script src="/socket.io/socket.io.js"></script>
+   
+</head>
+<body style="margin:0; height:100%; width:100%; object-fit:fill;">
+  
+    <div class ="content" style="position:absolute; top:0; padding:0; z-index:2;">
+      <section class="select">
+        <label for="audioSource">Audio source: </label>
+        <select id="audioSource"></select>
+        <audio playsinline controls muted></audio>
+      </section>
+      <h1 id = "clientID">ADMIN - NOT SET</h1>
+      <p id="clientCount">0 Clients connected</p>
+      <!-- <button class="" onclick="setMaster()" style='width:51vw; z-index: 2;'>Set Master</button> -->
+      <button class="" onclick="syncAll()" style='width:51vw; z-index: 2;'>Re-Sync All</button>
+    </div>
+
+    <video id = 'vid' loop = 'true' controls playsinline style = "object-fit:fill; height: 100%; width:100%; margin:0px;">
+      <source src="WaitingRoom2.mp4" type="video/mp4" loop = 'true'>
+      Your browser does not support the video tag.
+    </video>
+    <script src="broadcast.js"></script>
+    <!-- <script src="script.js"></script> -->
+    
+  </body>

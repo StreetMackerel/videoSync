@@ -5,35 +5,153 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Video Sync Test</title>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="script.js"></script>
-</head>
-<body style="margin:0; height:100%; width:100%; object-fit:fill;">
+    <title>Rising</title>
 
-  <div class ="content" style="position:absolute; top:0; padding:0; z-index:2;">
-    <h1 id = "clientID">USER</h1>
-    <p id="clientCount" hidden>0 Clients connected</p>
-    <button id="resync" style='z-index: 10;'class="button2" onclick="getTime()"hidden>re-sync</button>
-    <!-- <button id="resyncAud" style='z-index: 10;'class="button2" onclick="getTime()"> audio sync</button> -->
+    <style>
+      html, body {
+          background-color: #000000;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          font-family: Arial, Helvetica, sans-serif;
+      }
+      #dialogText {
+          padding: 10px 30px;
+          color: white;
+          background-color: #333333;
+      }
+      
+      #dialogWrap {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: table;
+          background-color: #000000;
+      }
+      
+      #dialogWrapCell {
+          display: table-cell;
+          text-align: center;
+          vertical-align: middle;
+      }
+      
+      #mainDialog {
+          max-width: 400px;
+          margin: 5px;
+          border: solid #AAAAAA 1px;
+          border-radius: 10px;
+          box-shadow: 3px 3px 5px 3px #4d4d4d;
+          margin-left: auto;
+          margin-right: auto;
+          background-color: #FFFFFF;
+          overflow: hidden;
+          text-align: left;
+      }
+      #passArea {
+          padding: 20px 30px;
+          background-color: white;
+      }
+      #passArea > * {
+          margin: 5px auto;
+      }
+      #pass {
+          width: 100%;
+          height: 40px;
+          font-size: 30px;
+      }
+      
+      #messageWrapper {
+          float: left;
+          vertical-align: middle;
+          line-height: 30px;
+      }
+      
+      .notifyText {
+          display: none;
+      }
+      
+      #invalidPass {
+          color: red;
+      }
+      
+      #success {
+          color: green;
+      }
+      
+      #submitPass {
+          font-size: 20px;
+          border-radius: 5px;
+          background-color: #E7E7E7;
+          border: solid gray 1px;
+          float: right;
+      }
+      #contentFrame {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+      }
+      #attribution {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          text-align: center;
+          padding: 10px;
+          font-weight: bold;
+          font-size: 0.8em;
+      }
+      #attribution, #attribution a {
+          color: rgb(75, 74, 74);
+      }
+  </style>
+</head>
+<body>
+  <div id="dialogWrap">
+      <div id="dialogWrapCell">
+          <div id="mainDialog">
+              <div id="dialogText">Please enter the password found on your ticket</div>
+              <div id="passArea">
+                  <p id="passwordPrompt">Password</p>
+                  <input id="pass" type="password" name="pass" autofocus>
+                  <div>
+                      <span id="messageWrapper">
+                          <span id="invalidPass" class="notifyText">Sorry, please try again.</span>
+                          <span id="success" class="notifyText">Success!</span>
+                          &nbsp;
+                      </span>
+                      <button id="submitPass" type="button" onclick='verify()'>Submit</button>
+                      <div style="clear: both;"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
   </div>
 
-    <video id = 'vid' loop = 'true' playsinline muted style = "object-fit:fill; height: 100%; width:100%; margin:0px;">
-      <source src="sam.mp4#t=0.001" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <audio id='aud' loop = 'true' controls playsinline preload='auto'>
-      <source src="sam.mp3#t=0.001" type="audio/mpeg" >
-      Your browser does not support the audio tag.
-    </audio>
-    
+  <script>
+    var socket = io.connect();
 
-  <button id="sync" class="button" onclick="getTime()">sync</button>
-  <button id="unmute" class="button" onclick="toggleMute()" hidden>unmute</button>
-  <button id="skip" class="" onclick="skip()" >skip</button>
-</body>
+    function verify(){
+      var t = document.getElementById('pass').value;
+      socket.emit("verify", t);
+      console.log(t)
+    }
 
-
+    socket.on('redirect', function(data) {
+        
+        if(data.url!='invalid password'){
+            console.log('correct');
+            window.location.href = data.url;
+            localStorage.setItem("token", data.token)
+        } else {
+            alert('invalid password');
+        }
+    });
+  </script>
 </html>
 
 
