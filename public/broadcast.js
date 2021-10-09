@@ -7,10 +7,14 @@ var latency = 0;
 var mobileBuffer = 0;
 var isMobile = false; //initiate as false
 var isiOS = false;
+var started = false;
+var token;
 
 document.addEventListener("DOMContentLoaded", function() {
   setMaster();
 });
+
+document.getElementById("started").innerHTML = "Started: "+started;
 
 const peerConnections = {};
 const config = {
@@ -27,6 +31,16 @@ const config = {
 };
 
 const socket = io.connect(window.location.origin);
+
+
+socket.on("setVals", function(data) {
+  token=data.token;
+  started=data.started;
+  if(token!=localStorage.token){
+    window.location.href = 'https://rising.link';
+  }
+  document.getElementById("started").innerHTML = "Started: "+data.started;
+})
 
 socket.on("answer", (id, description) => {
   peerConnections[id].setRemoteDescription(description);
@@ -162,6 +176,21 @@ socket.on('startVid', function(pos) {
   startVid(parseFloat(pos)+((latency+mobileBuffer)/1000)); 
 })
 
+socket.on('stream', function() {
+  unmute();
+})
+
+socket.on('startShow', function() {
+  started =true;
+  document.getElementById("started").innerHTML = "Started: "+started;
+
+})
+
+socket.on('startShowVid', function(pos) {
+  started =true;
+ // document.getElementById('vid2').play();
+})
+
 //calculates latency, fired every 5 seconds
 socket.on('pong', function(ms) {
   latency = ms;
@@ -170,7 +199,11 @@ socket.on('pong', function(ms) {
 
 socket.on('getMasterTime', function(recipient) {
   if(isMaster){
+    // if(started){
+    //   var vid = document.getElementById("vid2");
+    // } else {
       var vid = document.getElementById("vid");
+   // }
       var time = vid.currentTime;
       socket.emit('setTime', time);
   }
@@ -214,11 +247,23 @@ function skip(){
 function syncAll(){
   //aud.load();
   if(isMaster){
+    // if(started){
+    //   var vid = document.getElementById("vid2");
+    // } else {
       var vid = document.getElementById("vid");
+    //}
       var time = vid.currentTime;
       socket.emit('resync', time);
       console.log('starting sync all');
   }
+}
+
+function unmute(){
+  socket.emit('unmute');
+}
+
+function credits(){
+  socket.emit('credits');
 }
 
 function startVid(pos) {

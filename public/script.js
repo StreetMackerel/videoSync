@@ -10,6 +10,7 @@ var isMobile = false; //initiate as false
 var isiOS = false;
 var token;
 var started = false;
+var timerStarted = false;
 
 //WebRTC code 
 let peerConnection;
@@ -65,20 +66,36 @@ socket.on("connect", () => {
 
 socket.on("startShow", function() {
   startShow();
+  audio.muted=false;
 })
+
+socket.on("stream", function() {
+  const audio = document.querySelector("audio");
+  audio.muted = false;
+})
+
+socket.on("credits", function() {
+  var string = '/img/credits.jpg';
+  document.getElementById("copy3").style.backgroundImage = "url('" + string + "')";
+  link();
+})
+
 
 function startShow(){
   document.getElementById('vid').remove();
   document.getElementById('test').remove();
-  audio.muted = false;
+  document.getElementById('copy3').style.zIndex = 500;
+  const audio = document.querySelector("audio");
+  audio.muted=false;
+  //document.getElementById('vid2').play();
 }
 
 socket.on("setVals", function(data) {
   token=data.token;
   started=data.started;
-  if(token!=localStorage.token){
-    window.location.href = 'https://rising.link';
-  }
+  // if(token!=localStorage.token){
+  //   window.location.href = 'https://rising.link';
+  // }
 })
 
 socket.on("broadcaster", () => {
@@ -102,8 +119,11 @@ if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine
     
     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
         isiOS = true;
+
+        
     }
 }
+
 
 window.focus();
 
@@ -114,10 +134,21 @@ socket.on('startVid', function(pos) {
     startVid(parseFloat(pos)+((latency+mobileBuffer)/1000)); 
 });
 
+// socket.on('startVid2', function(pos) {
+//     startVid2(parseFloat(pos)+((latency+mobileBuffer)/1000)); 
+// });
+
 socket.on('shake', function() {
-  navigator.vibrate(); 
+  navigator.vibrate([100,50,100,50,100,50,100]);
 });
 
+socket.on('link', function() {
+  link();
+});
+
+function link(){
+  document.getElementById('link').hidden=false;
+}
 socket.on('flash', function() {
   //flash here
 });
@@ -127,15 +158,6 @@ socket.on('pong', function(ms) {
     latency = ms;
     //console.log(latency);
 });
-
-socket.on('getMasterTime', function(recipient) {
-    if(isMaster){
-        var vid = document.getElementById("vid");
-        var time = vid.currentTime;
-        socket.emit('setTime', time);
-    }
-})
-
 
 function startTimer(duration) {
   let vidDuration = 1800;
@@ -148,6 +170,10 @@ function startTimer(duration) {
       seconds = parseInt(timer % 60, 10);
       milliseconds = Math.floor(Math.random() * 90 + 10);
 
+      if (minutes<0) {minutes =0};
+      if (seconds<0) {seconds =0};
+      if (minutes==0 && seconds==0) {milliseconds=0};
+
       minutes = minutes < 10 ? "0" + minutes : minutes;
       seconds = seconds < 10 ? "0" + seconds : seconds;
 
@@ -155,6 +181,7 @@ function startTimer(duration) {
         clearInterval(repeat);
       }
 
+      
       display = document.getElementById("time").innerHTML = minutes + ":" + seconds + ':' + milliseconds;
       timer-=0.01
 
@@ -187,7 +214,7 @@ function syncAll(){
 function unmute(){
     console.log("Enabling audio")
 
-    //audio.muted = false;
+    audio.muted = false;
 
     //webRTC audio start
     audio.play();
@@ -195,9 +222,9 @@ function unmute(){
     
     reveal();
 
-   var aud = document.getElementById('test');
+    var aud = document.getElementById('test');
    //local audio start
-    aud.load();
+   // aud.load();
     tryPlay();
 };
 
@@ -205,6 +232,7 @@ function reveal(){
 
   if(started){
     startShow();
+    audio.muted = false;
   }
   document.getElementById("time").hidden = true;
   document.getElementById("copy2").classList.add('fade');
@@ -225,20 +253,44 @@ function startVid(pos) {
             console.log("starting video at: "+pos);
             vid.currentTime = pos;
             vid.play();
-            startTimer(pos);
-            console.log('starting countdown at: '+pos);
 
+            if(!timerStarted){
+              startTimer(pos);
+              timerStarted = true;
+            }
             
-           
-
+            console.log('starting countdown at: '+pos);
              // document.getElementById("unmute").hidden = true;
             
             
 
     } else {
         
-        var vid = document.getElementById("vid");
-        console.log("starting video at: "+pos);
+      var vid = document.getElementById("vid");
+      console.log("starting video at: "+pos);
+      vid.currentTime = pos;
+      vid.play();
+        
+    }
+    
+} 
+
+function startVid2(pos) {
+
+   //wait for fade anim then delete element
+    
+    if(!isMaster){
+
+            var vid = document.getElementById("vid2");
+            console.log("starting video 2 at: "+pos);
+            vid.currentTime = pos;
+            vid.play();
+          
+          
+    } else {
+        
+        var vid = document.getElementById("vid2");
+        console.log("starting video 2 at: "+pos);
         vid.currentTime = pos;
         vid.play();
         
@@ -261,4 +313,16 @@ function tryPlay(){
   }
 }
 
+//on return to tab
+document.addEventListener("visibilitychange", function() {
+  getTime();
+});
+
+setInterval(function () {
+  if(!started){
+    getTime();
+  }
+  }, 20000);
+
+  
 

@@ -7,8 +7,7 @@ var compression = require('compression')
 var app = express()
 app.use(compression())
 
-
-
+var http = require('http')
 var https = require('https')
 var fs = require('fs');
 
@@ -28,7 +27,14 @@ const aurl = 'https://rising.link/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.html';
 const token ='auth';
 
 var server = https.createServer(credentials, app);
-    
+
+http.createServer(function (req, res) {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+}).listen(80);
+
+//var server2 = http.createServer(app);
+       
 var io = require('socket.io')(server, {pingInterval: 5000}) // pinginterval handles reporting latency per client
 var PORT = process.env.PORT || 443
 
@@ -36,11 +42,13 @@ var PORT = process.env.PORT || 443
 var requestee;
 var master = null;
 var masterSet = false;
-var started =false;
+var started = false;
 let broadcaster;
+
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
+
 
 //Mount route
 app.get(['/', '/index.html'], function(req, res, next) {
@@ -110,17 +118,33 @@ io.on('connection', function(client) {
     });
 
 
+    client.on('credits', function() {
+        io.emit('credits');
+    });
+
+    client.on('unmute', function() {
+        io.emit('stream');
+    });
+
     client.on('resync', function(time) {
         console.log("master setting time");
-        io.emit('startVid',time); //this adjusts just the requestee's video to master's time
+        // if(started){
+        //     requestee.emit('startVid2',time); //this adjusts just the requestee's video to master's time
+        // } else {
+            requestee.emit('startVid',time); //this adjusts just the requestee's video to master's time
+       // }
     });
 
     client.on('setTime', function(time) {
         console.log("master setting time");
         master = client;
         masterSet = true;
-        requestee.emit('setCountdown',time);//set time text
-        requestee.emit('startVid',time); //this adjusts just the requestee's video to master's time
+        //if(started){
+        //    requestee.emit('startVid2',time); //this adjusts just the requestee's video to master's time
+      //  } else {
+            requestee.emit('startVid',time); //this adjusts just the requestee's video to master's time
+       // }
+        console.log('started var was : '+started)
     });
     
     client.on('verify', function(p) { 
@@ -138,10 +162,22 @@ io.on('connection', function(client) {
 app.post('/start', function(request, response){
     started=true;
     io.emit('startShow');
+   // io.to(broadcaster).emit("startShowVid");
+});
+
+app.post('/stream', function(request, response){
+    io.emit('stream');
+    response.send('success stream');
 });
 
 app.post('/shake', function(request, response){
     io.emit('shake');
+    response.send('success vibrate');
+});
+
+app.post('/link', function(request, response){
+    io.emit('link');
+    response.send('success link');
 });
 
 app.post('/flash', function(request, response){
@@ -157,3 +193,6 @@ app.post('/stop', function(request, response){
 server.listen(PORT, function() {
     console.log('Server starting on port :'+PORT)
 })
+
+
+

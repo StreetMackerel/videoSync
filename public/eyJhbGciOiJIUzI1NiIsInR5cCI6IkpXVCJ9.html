@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Video Sync Test</title>
+    <title>ADMIN</title>
     <script src="/socket.io/socket.io.js"></script>
    
 </head>
-<body style="margin:0; height:100%; width:100%; object-fit:fill;">
+<body style="margin:0; height:100%; width:100%; object-fit:cover;">
   
     <div class ="content" style="position:absolute; top:0; padding:0; z-index:2;">
       <section class="select">
@@ -19,14 +19,21 @@
       </section>
       <h1 id = "clientID">ADMIN - NOT SET</h1>
       <p id="clientCount">0 Clients connected</p>
+      <p id="started"></p>
       <!-- <button class="" onclick="setMaster()" style='width:51vw; z-index: 2;'>Set Master</button> -->
       <button class="" onclick="syncAll()" style='width:51vw; z-index: 2;'>Re-Sync All</button>
+      <button class="" onclick="unmute()" style='width:51vw; z-index: 2;'>Un-Mute</button>
+      <button class="" onclick="credits()" style='width:51vw; z-index: 2;'>Credits</button>
     </div>
 
-    <video id = 'vid' loop = 'true' controls playsinline style = "object-fit:fill; height: 100%; width:100%; margin:0px;">
-      <source src="WaitingRoom2.mp4" type="video/mp4" loop = 'true'>
+    <video id = 'vid' preload='auto' controls playsinline style = "object-fit:fill; height: 100%; width:100%; margin:0px;">
+      <source src="WaitingRoom720.mp4" type="video/mp4" loop = 'true'>
       Your browser does not support the video tag.
     </video>
+    <!-- <video id = 'vid2' preload='auto'  muted controls playsinline style = "object-fit:fill; height: 50%; width:100%; margin:0px;">
+      <source src="showVid720.mp4" type="video/mp4" loop = 'true'>
+      Your browser does not support the video tag.
+    </video> -->
     <script src="broadcast.js"></script>
     <!-- <script src="script.js"></script> -->
     

@@ -5,153 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
+    <title>RISING</title>
     <script src="/socket.io/socket.io.js"></script>
-    <title>Rising</title>
-
-    <style>
-      html, body {
-          background-color: #000000;
-          margin: 0;
-          width: 100%;
-          height: 100%;
-          font-family: Arial, Helvetica, sans-serif;
-      }
-      #dialogText {
-          padding: 10px 30px;
-          color: white;
-          background-color: #333333;
-      }
-      
-      #dialogWrap {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: table;
-          background-color: #000000;
-      }
-      
-      #dialogWrapCell {
-          display: table-cell;
-          text-align: center;
-          vertical-align: middle;
-      }
-      
-      #mainDialog {
-          max-width: 400px;
-          margin: 5px;
-          border: solid #AAAAAA 1px;
-          border-radius: 10px;
-          box-shadow: 3px 3px 5px 3px #4d4d4d;
-          margin-left: auto;
-          margin-right: auto;
-          background-color: #FFFFFF;
-          overflow: hidden;
-          text-align: left;
-      }
-      #passArea {
-          padding: 20px 30px;
-          background-color: white;
-      }
-      #passArea > * {
-          margin: 5px auto;
-      }
-      #pass {
-          width: 100%;
-          height: 40px;
-          font-size: 30px;
-      }
-      
-      #messageWrapper {
-          float: left;
-          vertical-align: middle;
-          line-height: 30px;
-      }
-      
-      .notifyText {
-          display: none;
-      }
-      
-      #invalidPass {
-          color: red;
-      }
-      
-      #success {
-          color: green;
-      }
-      
-      #submitPass {
-          font-size: 20px;
-          border-radius: 5px;
-          background-color: #E7E7E7;
-          border: solid gray 1px;
-          float: right;
-      }
-      #contentFrame {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-      }
-      #attribution {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          text-align: center;
-          padding: 10px;
-          font-weight: bold;
-          font-size: 0.8em;
-      }
-      #attribution, #attribution a {
-          color: rgb(75, 74, 74);
-      }
-  </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/85188/jquery.ripples-min.js"></script> -->
+    <script src="ripple.js"></script>
 </head>
-<body>
-  <div id="dialogWrap">
-      <div id="dialogWrapCell">
-          <div id="mainDialog">
-              <div id="dialogText">Please enter the password found on your ticket</div>
-              <div id="passArea">
-                  <p id="passwordPrompt">Password</p>
-                  <input id="pass" type="password" name="pass" autofocus>
-                  <div>
-                      <span id="messageWrapper">
-                          <span id="invalidPass" class="notifyText">Sorry, please try again.</span>
-                          <span id="success" class="notifyText">Success!</span>
-                          &nbsp;
-                      </span>
-                      <button id="submitPass" type="button" onclick='verify()'>Submit</button>
-                      <div style="clear: both;"></div>
-                  </div>
-              </div>
-          </div>
-      </div>
+
+<body style="margin:0; height:100%; width:100%; object-fit:cover;">
+  <!-- <img src='img/DC_button_1.png' style='position:absolute; top:0; z-index:14'> -->
+  <div id='time' style =' font-family: myfont; margin:0; z-index: 15; position: absolute;  color: white; font-size: 10vw; left:6.5%'>00:00:00</div>
+  <div id = 'preload' class ='image' style='z-index:1000; background-image: none; background-color: black;'>
+    <div class="lds-ripple" style = 'position: absolute; top:50%; left:50%; -webkit-transform:translate(-50%, -50%); transform: translate(-50%, -50%);'><div></div><div></div></div>
+  </div>
+  <a id='link' hidden class='link' href="https://brokentalkers.ie/rising/">FOR MORE INFORMATION ABOUT PHASE 2 OF RISING. CLICK HERE</a>
+  <!-- <div id = 'copy' class ='image3' ></div> -->
+  <div id = 'copy' class ='image' ></div>
+  <div id = 'copy2' class ='image2'></div>
+  <div id = 'copy3' class ='image3' ></div>
+  <div class ="content" style="position:absolute; top:0; padding:0; z-index:2;">
+    <h1 id = "clientID"></h1>
+    <p id="clientCount" hidden>0 Clients connected</p>
+    <!-- <button id="resync" style='z-index: 12;'class="button2" onclick="getTime()"hidden>re-sync</button> -->
+    <!-- <button id="resyncAud" style='z-index: 10;'class="button2" onclick="getTime()"> audio sync</button> -->
   </div>
 
-  <script>
-    var socket = io.connect();
 
-    function verify(){
-      var t = document.getElementById('pass').value;
-      socket.emit("verify", t);
-      console.log(t)
-    }
+    <video id = 'vid'  playsinline style = "object-fit:cover; height: 100%; width:100%; margin:0px;">
+      <source src="WaitingRoom720.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
 
-    socket.on('redirect', function(data) {
-        
-        if(data.url!='invalid password'){
-            console.log('correct');
-            window.location.href = data.url;
-            localStorage.setItem("token", data.token)
-        } else {
-            alert('invalid password');
-        }
-    });
-  </script>
+    <!-- <video id = 'vid2'  playsinline muted style = "object-fit:cover; height: 100%; width:100%; margin:0px; z-index: -999;">
+      <source src="showVid720.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video> -->
+    
+
+    <!-- WebRTC audio -->
+    <audio playsinline autoplay controls hidden muted></audio>
+
+    <!-- local audio -->
+    <audio id='test' preload='auto' loop = 'true' hidden playsinline controls src='WaitingRoom.wav'
+    oncanplaythrough="myOnCanPlayThroughFunction()"
+    onloadeddata="myOnLoadedData()"
+    ></audio>
+
+  <button id="sync" class="button" onclick="next()"></button>
+  <button id="unmute" class="button2" onclick="unmute()"></button>
+  
+  
+<script type='text/javascript'>
+    // function rippleOn(){ 
+    //   try {
+    //     $('.image').ripples({
+    //       resolution: 256,
+    //       perturbance: 2
+    //     });
+    //     $('.image2').ripples({
+    //       resolution: 256,
+    //       perturbance: 2
+    //     });
+    //   }
+    //   catch (e) {
+    //     $('.error').show().text(e);
+    //   }
+    // }
+    // function drop(){ 
+    //   $('image2').ripples("drop", 0, 0,200,200);
+    // }
+</script>
+<script src="script.js"></script>
 </html>
 
 

@@ -15,6 +15,7 @@
     background: transparent;
   }
   
+
   /* Add some content at the bottom of the video/page */
   .content {
     background: rgba(0, 0, 0, 0.5);
@@ -32,7 +33,7 @@
     border: 0;
     cursor: pointer;
     position: absolute;
-    top: 90%;
+    top: 93%;
     left: 28%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -48,7 +49,7 @@
     padding: 0px;
     cursor: pointer;
     position: absolute;
-    top: 90%;
+    top: 93%;
     left: 41%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
@@ -85,7 +86,7 @@
     background-image:url(/img/DC_1.png);
     background-repeat: no-repeat;
     /* background-position:center;*/
-     background-size: cover;  
+    background-size: 100% 100%;  
     /* overflow-y: hidden; */
     transition-property: all; 
 	  transition-duration: 1.5s;
@@ -102,7 +103,7 @@
     background-image:url(/img/DC_2.png);
     background-repeat: no-repeat;
     /* background-position:center; */
-    background-size: cover;
+    background-size: 100% 100%;
     /* overflow-y: hidden; */
     transition-property: all; 
 	  transition-duration: 1.5s;
@@ -117,10 +118,12 @@
     /* object-fit:cover; */
     height:100%;
     width:100%;
-    background-image:url(/img/placeholder.png);
+    
     background-repeat: no-repeat;
     /* background-position:center; */
-    background-size: cover;
+    background-size: 100% 100%;
+    background-image:url(/img/RisingShow.jpg);
+    background-attachment: fixed;
     /* overflow-y: hidden; */
     transition-property: all; 
 	  transition-duration: 1.5s;
@@ -169,5 +172,16 @@
     font-family: myfont;
     src: url(/timefont.otf);
   }
-
+  .link{
+    font-size: 4vw;
+    color: #fff;
+    text-align: center;
+    z-index: 1000;
+    font-family: myfont;
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
   
