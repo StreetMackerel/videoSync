@@ -12,57 +12,42 @@ var https = require('https')
 var fs = require('fs');
 
 //SSL cert for HTTPS
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/rising.link/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/rising.link/fullchain.pem', 'utf8');
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/rising.link/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/rising.link/fullchain.pem', 'utf8');
 
-const credentials = {
-	key: privateKey,
-	cert: certificate,
-};
+// const credentials = {
+// 	key: privateKey,
+// 	cert: certificate,
+// };
+// var server = https.createServer(credentials, app);
+var server = http.createServer(app);
+// http.createServer(function (req, res) {
+//     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+//     res.end();
+// }).listen(80);
 
-const t = "rising";
-const at = '1920x1080!?';
-const url = 'https://rising.link/show.html';
-const aurl = 'https://rising.link/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.html';
-const token ='auth';
-
-var server = https.createServer(credentials, app);
-
-http.createServer(function (req, res) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(80);
-
-//var server2 = http.createServer(app);
        
 var io = require('socket.io')(server, {pingInterval: 5000}) // pinginterval handles reporting latency per client
-var PORT = process.env.PORT || 443
+var PORT = process.env.PORT || 3000 //443
 
-//vars for master client and current sync requestee
-var requestee;
-var master = null;
-var masterSet = false;
-var started = false;
-let broadcaster;
-
+var broadcaster;
+var currentImage = 1;
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
-
 
 //Mount route
 app.get(['/', '/index.html'], function(req, res, next) {
     res.sendFile(__dirname + '/public/index.html')
 })
 
-app.get(['/admin'], function(req, res, next) {
-    res.sendFile(__dirname + '/public/admin.html')
-})
-
 //when a client connects
 io.on('connection', function(client) {
 
-    client.emit('setVals', {started:started, token:token});
+    client.emit('setVals', {currentImage:currentImage, broadcaster:broadcaster});
+
+    //send admin user count
+    updateClientList(client);
 
     //WebRTC sockets
     client.on("broadcaster", () => {
@@ -90,104 +75,19 @@ io.on('connection', function(client) {
 
     client.on("disconnect", () => {
         console.info(`Client gone [id=${client.id}]`);
-        if(masterSet){
-            var clientsLength = Object.keys(io.sockets.sockets).length;
-
-            master.emit('clientList', clientsLength-1)
-        };
-        if(client == master) {
-            console.log('master disconnected')
-            masterSet = false;
-        }
+        updateClientList(client);
     });
 
-    if(masterSet){
-        var clientsLength = Object.keys(io.sockets.sockets).length;
-        master.emit('clientList', clientsLength-1);
-    }
-    
-    //first half of sync: client gets master time. client is stored as requestee
-    client.on('getTime', function() {
-        console.log('requesting time');
-        requestee = client;
-        if(masterSet){
-            master.emit('getMasterTime');
-        } else {
-            io.emit('getMasterTime'); // if master unassigned check all for master
-        }
-    });
-
-
-    client.on('credits', function() {
-        io.emit('credits');
-    });
-
-    client.on('unmute', function() {
-        io.emit('stream');
-    });
-
-    client.on('resync', function(time) {
-        console.log("master setting time");
-        // if(started){
-        //     requestee.emit('startVid2',time); //this adjusts just the requestee's video to master's time
-        // } else {
-            requestee.emit('startVid',time); //this adjusts just the requestee's video to master's time
-       // }
-    });
-
-    client.on('setTime', function(time) {
-        console.log("master setting time");
-        master = client;
-        masterSet = true;
-        //if(started){
-        //    requestee.emit('startVid2',time); //this adjusts just the requestee's video to master's time
-      //  } else {
-            requestee.emit('startVid',time); //this adjusts just the requestee's video to master's time
-       // }
-        console.log('started var was : '+started)
-    });
-    
-    client.on('verify', function(p) { 
-        console.log(p,t,at);
-        if(p==t){
-            client.emit('redirect',{url:url, token:token});
-        } else if(p==at) {
-            client.emit('redirect',{url:aurl, token:token});
-        } else {
-            client.emit('redirect','invalid password');
-        }
+    client.on("newImage", function(index){
+        currentImage=index;
+        io.emit('newImage', index);
     });
 })
 
-app.post('/start', function(request, response){
-    started=true;
-    io.emit('startShow');
-   // io.to(broadcaster).emit("startShowVid");
-});
-
-app.post('/stream', function(request, response){
-    io.emit('stream');
-    response.send('success stream');
-});
-
-app.post('/shake', function(request, response){
-    io.emit('shake');
-    response.send('success vibrate');
-});
-
-app.post('/link', function(request, response){
-    io.emit('link');
-    response.send('success link');
-});
-
-app.post('/flash', function(request, response){
-    io.emit('flash');
-});
-
-
-app.post('/stop', function(request, response){
-    started=false;
-});
+function updateClientList(client){
+    var clientsLength = Object.keys(io.sockets.sockets).length;
+    client.to(broadcaster).emit('clientList', clientsLength-1);
+}
 
 //start web server
 server.listen(PORT, function() {

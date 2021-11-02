@@ -1,8 +1,7 @@
 
-  html {
-    height: 100%;
+  html { 
     max-width: 100%;
-    overflow: hidden;
+    max-height: 100%;
   }
   body, html {
     min-height: 100%;
@@ -13,6 +12,7 @@
     font-size: 100%;
     vertical-align: baseline;
     background: transparent;
+    background: rgba(0, 0, 0);
   }
   
 
@@ -22,6 +22,33 @@
     color: #f1f1f1;
     width: 100%;
     padding: 20px;
+  }
+
+  .text-content {
+    color: #f1f1f1;
+    font-size: 3.5vw;
+    padding:15vw;
+    z-index: 200;
+    -webkit-transform: translate(-0%, -50%);
+    transform: translate(-0%, 35%);
+  }
+
+  .bg-image {
+    position: absolute;
+    z-index: 10;
+    margin:0;
+    width:100%;
+    height:205%;
+    background-image:url(/img/WP-DC-Anna.jpg);
+    background-repeat: no-repeat;
+    /* background-position:center;*/
+    background-size: 100% 100%;
+    overflow:hidden;
+    opacity: 0;
+    -webkit-transition: opacity 2s linear;
+    -moz-transition: opacity 2s linear;
+    -o-transition: opacity 2s linear;
+    transition: opacity 2s linear;
   }
   
   /* Style the button used to pause/play the video */
@@ -33,47 +60,13 @@
     border: 0;
     cursor: pointer;
     position: absolute;
-    top: 93%;
-    left: 28%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    background:url(/img/DC_button_1.png) ; 
-    background-size: cover;
-    z-index: 13;
-  }
-  .button2 {
-    width: 70.5vw;
-    height: 11vw;
-    font-size: 18px;
-    border: 0;
-    padding: 0px;
-    cursor: pointer;
-    position: absolute;
-    top: 93%;
-    left: 41%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    background:url(/img/DC_button_2.png); 
-    background-size: cover;
-    z-index: 10;
-  }
-
-  .button3 {
-    width: 25vw;
-    height: 10vw;
-    font-size: 18px;
-    padding: 10px;
-    border: none;
-    background: rgb(48, 51, 51);
-    color: rgb(255, 253, 253);
-    cursor: pointer;
-    position: absolute;
-    
     top: 50%;
     left: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-
+    /* background:url(/img/DC_button_1.png) ;  */
+    background-size: cover;
+    z-index: 13;
   }
 
   .image { 
@@ -88,100 +81,112 @@
     /* background-position:center;*/
     background-size: 100% 100%;  
     /* overflow-y: hidden; */
-    transition-property: all; 
-	  transition-duration: 1.5s;
-	  transition-timing-function: cubic-bezier(0, 0.05, 0.5, 1, 0.05);
+
   }
 
-  .image2 { 
-    position: absolute;
-    z-index: 9;
-    margin:0;
-    /* object-fit:cover; */
-    height:100%;
-    width:100%;
-    background-image:url(/img/DC_2.png);
-    background-repeat: no-repeat;
-    /* background-position:center; */
-    background-size: 100% 100%;
-    /* overflow-y: hidden; */
-    transition-property: all; 
-	  transition-duration: 1.5s;
-	  transition-timing-function: cubic-bezier(0, 0.05, 0.5, 1, 0.05);
-    
+  .show {
+    opacity: 1; 
   }
 
-  .image3 { 
-    position: absolute;
-    z-index: -1;
-    margin:0;
-    /* object-fit:cover; */
-    height:100%;
-    width:100%;
-    
-    background-repeat: no-repeat;
-    /* background-position:center; */
-    background-size: 100% 100%;
-    background-image:url(/img/RisingShow.jpg);
-    background-attachment: fixed;
-    /* overflow-y: hidden; */
-    transition-property: all; 
-	  transition-duration: 1.5s;
-	  transition-timing-function: cubic-bezier(0, 0.05, 0.5, 1, 0.05);
-    
-  }
 
-  .fade {
-    /*  opacity: 0; */
-    transform: translate(0%, -100%);
-  }
+ /* mute icon */
 
-  .lds-ripple {
-    display: inline-block;
-    position: relative;
-    width: 80px;
-    height: 80px;
-  }
-  .lds-ripple div {
-    position: absolute;
-    border: 4px solid #fff;
-    opacity: 1;
-    border-radius: 50%;
-    animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-  }
-  .lds-ripple div:nth-child(2) {
-    animation-delay: -0.5s;
-  }
-  @keyframes lds-ripple {
-    0% {
-      top: 36px;
-      left: 36px;
-      width: 0;
-      height: 0;
-      opacity: 1;
-    }
-    100% {
-      top: 0px;
-      left: 0px;
-      width: 72px;
-      height: 72px;
-      opacity: 0;
-    }
-  }
-  @font-face {
-    font-family: myfont;
-    src: url(/timefont.otf);
-  }
-  .link{
-    font-size: 4vw;
-    color: #fff;
+ .container {
+  /* background-color: #03A9F4; */
+  position: absolute;
+  width:100%;
+  height:100%;
+  left:0;
+  top:0;
+}
+.toggle-sound {
+    position: fixed;
+    top: calc(85% - 25.5px);
+  left: calc(50% - 25.5px);
+  background-color: #EC407A;
+  width: 55px;
+  height: 55px;
+    line-height: 55px;
     text-align: center;
-    z-index: 1000;
-    font-family: myfont;
-    position: absolute;
-    top: 85%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-  }
+    color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 99;
+  animation: pulse 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+  box-shadow: 0 0 0 0 #F06292;
+}
+.toggle-sound.sound-mute {
+  box-shadow: none;
+}
+@-webkit-keyframes pulse {to {box-shadow: 0 0 0 45px rgba(232, 76, 61, 0);}}
+@-moz-keyframes pulse {to {box-shadow: 0 0 0 45px rgba(232, 76, 61, 0);}}
+@-ms-keyframes pulse {to {box-shadow: 0 0 0 45px rgba(232, 76, 61, 0);}}
+@keyframes pulse {to {box-shadow: 0 0 0 45px rgba(232, 76, 61, 0);}}
+
+.sound {
+  width: 97%;
+  height: 100%;
+  position: absolute;
+  cursor: pointer;
+  display: inline-block;
+  left: 0;
+  top: 0;
+  margin-left: -15%;
+}
+.sound--icon {
+  color: inherit;
+  line-height: inherit;
+  font-size: 2rem;
+  display: block;
+  margin: auto;
+  text-align: left;
+  padding-right: 6px;
+  padding-top: 11.5px;
+
+}
+.sound--wave {
+  position: absolute;
+  border: 2px solid transparent;
+  border-right: 2px solid #fff;
+  border-radius: 50%;
+  transition: all 200ms;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.sound--wave_one {
+  width: 45%;
+  height: 40%;
+}
+.sound--wave_two {
+  width: 70%;
+  height: 62%;
+}
+.sound--wave_three {
+width: 95%;
+height:75%;
+}
+.sound-mute .sound--wave {
+border-radius: 0;
+width: 35%;
+height: 35%;
+border-width: 0 2px 0 0;
+left: 5px;
+}
+.sound-mute .sound--wave_one {
+  -webkit-transform: rotate(45deg) translate3d(0, -50%, 0);
+          transform: rotate(45deg) translate3d(0, -50%, 0);
+}
+.sound-mute .sound--wave_two {
+  -webkit-transform: rotate(-45deg) translate3d(0, 50%, 0);
+          transform: rotate(-45deg) translate3d(0, 50%, 0);
+}
+.sound-mute .sound--wave_three {
+    opacity: 0;
+    transform: translateX(-46%);
+    height: 20%;
+
+}
   

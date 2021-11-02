@@ -12,29 +12,23 @@
 <body style="margin:0; height:100%; width:100%; object-fit:cover;">
   
     <div class ="content" style="position:absolute; top:0; padding:0; z-index:2;">
+      <h1 id = "clientID">ADMIN PANEL</h1>
       <section class="select">
         <label for="audioSource">Audio source: </label>
         <select id="audioSource"></select>
         <audio playsinline controls muted></audio>
       </section>
-      <h1 id = "clientID">ADMIN - NOT SET</h1>
       <p id="clientCount">0 Clients connected</p>
       <p id="started"></p>
-      <!-- <button class="" onclick="setMaster()" style='width:51vw; z-index: 2;'>Set Master</button> -->
-      <button class="" onclick="syncAll()" style='width:51vw; z-index: 2;'>Re-Sync All</button>
-      <button class="" onclick="unmute()" style='width:51vw; z-index: 2;'>Un-Mute</button>
-      <button class="" onclick="credits()" style='width:51vw; z-index: 2;'>Credits</button>
+      <p id="currIndex">Current Image :</p>
+      <button class="" onclick="setNewImage(1)" style='width:26vw; z-index: 2;'>1</button>
+      <button class="" onclick="setNewImage(2)" style='width:26vw; z-index: 2;'>2</button>
+      <button class="" onclick="setNewImage(3)" style='width:26vw; z-index: 2;'>3</button>
+      <button class="" onclick="setNewImage(4)" style='width:26vw; z-index: 2;'>4</button>
+      <button class="" onclick="setNewImage(5)" style='width:26vw; z-index: 2;'>5</button>
+      <button class="" onclick="setNewImage(6)" style='width:26vw; z-index: 2;'>6</button>
+      <button class="" onclick="setNewImage(7)" style='width:26vw; z-index: 2;'>7</button>
+      <button class="" onclick="setNewImage(8)" style='width:26vw; z-index: 2;'>8</button>
     </div>
-
-    <video id = 'vid' preload='auto' controls playsinline style = "object-fit:fill; height: 100%; width:100%; margin:0px;">
-      <source src="WaitingRoom720.mp4" type="video/mp4" loop = 'true'>
-      Your browser does not support the video tag.
-    </video>
-    <!-- <video id = 'vid2' preload='auto'  muted controls playsinline style = "object-fit:fill; height: 50%; width:100%; margin:0px;">
-      <source src="showVid720.mp4" type="video/mp4" loop = 'true'>
-      Your browser does not support the video tag.
-    </video> -->
-    <script src="broadcast.js"></script>
-    <!-- <script src="script.js"></script> -->
-    
+    <script src="admin.js"></script>
   </body>
