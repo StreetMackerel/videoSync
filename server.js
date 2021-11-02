@@ -3,9 +3,11 @@
 // import express and initilize server
 var express = require('express') 
 var compression = require('compression')
+var bodyParser = require('body-parser');
 //const rateLimit = require("express-rate-limit");
 var app = express()
 app.use(compression())
+app.use(bodyParser.json()); // for parsing application/json
 
 var http = require('http')
 var https = require('https')
@@ -83,6 +85,12 @@ io.on('connection', function(client) {
         io.emit('newImage', index);
     });
 })
+
+app.post('/setNewImage', function(request, response){
+  response.send(request.body.value);
+  console.log(request.body.value)
+  io.emit('setNewImage', request.body.value);
+});
 
 function updateClientList(client){
     var clientsLength = Object.keys(io.sockets.sockets).length;

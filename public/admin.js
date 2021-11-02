@@ -133,8 +133,13 @@ socket.on('pong', function(ms) {
   console.log(latency);
 });
 
+socket.on('setNewImage', function(data) {
+  setNewImage(parseInt(data));
+})
+
 function setNewImage(index){
     socket.emit('newImage', index);
+    console.log('setting image to:'+index);
     document.getElementById('currIndex').innerHTML = 'Current Image: '+index;
 }
 

@@ -121,7 +121,6 @@ function newImage(index){
   
   //fade in new after 2 seconds
   setTimeout(function(){ index.classList.add('show'); }, 2000);
-  
 }
 
 
