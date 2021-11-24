@@ -1,4 +1,4 @@
-# NodeSocketIO
+# Node Socket.io WebRTC live audio web app - One to Many
 
 Creates a Node Web Server which multiple clients can connect to on a browser and interact with.
 
